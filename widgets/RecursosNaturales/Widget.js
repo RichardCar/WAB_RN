@@ -19,17 +19,11 @@ function(declare,BaseWidget,FeatureLayer,Query,DataGrid, ItemFileReadStore, stam
 
     baseClass: 'jimu-widget-demo',
     grid:null,
+    map: this.map,
 
     postCreate: function() {
       this.inherited(arguments);
       console.log('postCreate');
-
-    },
-
-    startup: function() {
-      this.inherited(arguments);
-      //this.mapIdNode.innerHTML = 'map id:' + this.map.id;
-      console.log('startup');
       var featureLayer = new FeatureLayer('https://services.arcgis.com/8DAUcrpQcpyLMznu/arcgis/rest/services/widget_RN/FeatureServer/0');
       var query = new Query();
       //query.objectIds = [features[0].attributes.OBJECTID];
@@ -39,6 +33,13 @@ function(declare,BaseWidget,FeatureLayer,Query,DataGrid, ItemFileReadStore, stam
         //this.crearTabla(res);
       this.cargarDatos(res.features);
       });
+    },
+
+    startup: function() {
+      this.inherited(arguments);
+      this.mapIdNode.innerHTML = 'map id:' + this.map.id;
+      console.log('startup');
+
 
 
     },
@@ -48,8 +49,7 @@ function(declare,BaseWidget,FeatureLayer,Query,DataGrid, ItemFileReadStore, stam
 
     onOpen: function(){
       console.log('onOpen');
-
-
+      console.log(this.map);
     },
 
     cargarDatos: function(data){
@@ -109,7 +109,6 @@ function(declare,BaseWidget,FeatureLayer,Query,DataGrid, ItemFileReadStore, stam
        },
 
        verDocumento: function(url){
-         console.log(url);
          var w = new Button({
              label: "Ver Documento",
              onClick: function() {
@@ -122,12 +121,14 @@ function(declare,BaseWidget,FeatureLayer,Query,DataGrid, ItemFileReadStore, stam
        },
 
        cargarCapa:function(urlServicio){
-         console.log(urlServicio);
+        console.log("map",this.map);
+        var capaAgregar = new FeatureLayer(urlServicio);
          var x = new Button({
              label: "Agregar",
              onClick: function() {
-                 console.log("vamos a agregar capa");
-                 window.open(urlServicio);
+               console.log(this.map);
+               this.map.addLayer(capaAgregar);
+                 console.log("capa agregada");
              }
          });
          x._destroyOnRemove=true;
